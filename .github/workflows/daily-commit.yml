@@ -1,20 +1,16 @@
 name: Daily Commit
 
 on:
-  # 1. This meets the schedule requirement:
-  #    - Runs once per day at 05:30 UTC.
-  #    - Uses specific minutes (30) and hours (5) as requested.
   schedule:
+    # Runs once per day at 05:30 UTC
     - cron: "30 5 * * *"
-
-  # 2. This allows you to "Trigger the workflow" manually
+  
   workflow_dispatch:
 
 jobs:
   auto-commit:
     runs-on: ubuntu-latest
     
-    # 3. This gives the workflow permission to write a commit
     permissions:
       contents: write
 
@@ -22,18 +18,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # 4. This step's name includes the required email
-      - name: Create daily update (user: 23f3003663@ds.study.iitm.ac.in)
+      # --- THIS IS THE CORRECTED LINE ---
+      - name: "Create daily update (user: 23f3003663@ds.study.iitm.ac.in)"
         run: |
-          # Creates or updates a file to ensure there is something to commit
           echo "Last update: $(date)" > daily-status-update.txt
 
-      # 5. This step creates the commit
       - name: Commit and push changes
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add daily-status-update.txt
-          # Commits the change. The "|| exit 0" prevents an error if the file hasn't changed.
           git commit -m "Automated daily status update [skip ci]" || exit 0
           git push
